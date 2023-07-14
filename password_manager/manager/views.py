@@ -51,12 +51,32 @@ def index(request):
                 messages.error(request, msg)
                 return HttpResponseRedirect(request.path)   
             else:
-                code = str(random.randint(1000000, 99999))
+                code = str(random.randint(100000, 999999))
+                global global_code
+                global_code = code
                 send_mail(
-                    "P.Manager: confirm your email"
-                    f"Your verfication code is {code}.",
+                    "P.Manager: confirm email",
+                    f"Your verification code is {code}.",
                     settings.EMAIL_HOST_USER,
                     [new_login.email],
                     fail_silently=False,
-                ) 
+                )
+                return render(request, "index.html", {
+                    "code" :code,
+                    "user":new_login,       
+                })
+                
+        elif "confirm" in request.POST:
+                input_code = request.POST.get("code") 
+                user = request.POST.get("user")
+                if input_code != global_code:
+                     msg = f"{input_code} is wrong!"
+                     messages.error(request, msg)
+                     return HttpResponseRedirect(request.path)
+                else:
+                    login(request, User.objects.get(username=user))
+                    msg = f"{request.user} Welcome back"
+                    messages.success(request, msg)
+                    return HttpResponseRedirect(request.path)
+                
     return render(request, "index.html")
