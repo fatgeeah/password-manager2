@@ -50,6 +50,19 @@
 {% endif %}
 
 
+{% if code %}
+<div style="text-align: center;">
+    <form action="." method="POST" role="form">
+        {% csrf_token %}
+        <h2>Please confirm your email to continue</h2>
+        <p>Check your eamil to receive the code.</p>
+        <input type="text"autocomplete="off" name="code"placeholder="enter the 6 digits code ...">
+        <input type="text" autocomplete="off" hidden="true" name="user" value="{{user.username}}">
+        <input type="submit"value="confirm" name="confirm">
+    </form>   
+</div>
+{% endif %}
+
  
     <div class="modals-wrapper">
         <span id="close-modal" title="close"><i class="fa fa-times"></i></span>
